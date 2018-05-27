@@ -58,3 +58,25 @@
   width: 75rpx;
   height: 75rpx;
 }
+.day-weather {
+  position: absolute;
+  bottom: 0;
+  left: 40rpx;
+  right: 40rpx;
+  font-size:30rpx;
+  line-height: 42rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, .1);
+  opacity:0.5;
+}
+.day-temp-text {
+  flex-grow: 1;
+  padding-right: 30rpx;
+  text-align: right;
+}
+.day-weather .arrow-icon {
+  width:13rpx;
+  height:24rpx;
+}
