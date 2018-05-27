@@ -39,33 +39,40 @@ Page({
       url: 'https://test-miniprogram.com'+'/api/weather/now?city='+'北京市',
       success: (req) => {
         if (req.data.code != 200) return false;
-        console.log(req.data.result)
-        let data = req.data.result
-        let nowHour = new Date().getHours()
-        _this.setData({
-          now: {
-            temp: data.now.temp +'˚',
-            weather: weatherMap[data.now.weather],
-            weatherBg: '/images/' + data.now.weather +'-bg.png'
-          },
-          forecast: data.forecast.map((el,index) => {
-            if(index == 0){
-              el.time = '现在'
-            }else {
-              let tempTime = nowHour + (index * 3)
-              el.time = (tempTime >= 24 ? tempTime % 24 : tempTime) + '时'
-            }
-            el.temp += '˚'
-            el.weatherIcon = '/images/' + el.weather + '-icon.png'
-            return el
-          })
-        })
+        // console.log(req.data.result)
+        _this.setNow(req.data.result)
+        _this.setForecast(req.data.result)
         wx.setNavigationBarColor({
           frontColor: '#000000',
-          backgroundColor: weatherColorMap[data.now.weather],
+          backgroundColor: weatherColorMap[req.data.result.now.weather],
         })
       },
       complete: callback
+    })
+  },
+  setNow(data) {
+    this.setData({
+      now: {
+        temp: data.now.temp + '˚',
+        weather: weatherMap[data.now.weather],
+        weatherBg: '/images/' + data.now.weather + '-bg.png'
+      }
+    })
+  },
+  setForecast(data) {
+    let nowHour = new Date().getHours()
+    this.setData({
+      forecast: data.forecast.map((el, index) => {
+        if (index == 0) {
+          el.time = '现在'
+        } else {
+          let tempTime = nowHour + (index * 3)
+          el.time = (tempTime >= 24 ? tempTime % 24 : tempTime) + '时'
+        }
+        el.temp += '˚'
+        el.weatherIcon = '/images/' + el.weather + '-icon.png'
+        return el
+      })
     })
   }
 })
