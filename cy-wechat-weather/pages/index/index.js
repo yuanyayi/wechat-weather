@@ -85,12 +85,20 @@ Page({
     let date = new Date()
     this.setData({
       today: {
-        dateText: [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-'),
-        tempText: data ? [data.today.maxTemp + '˚', data.today.minTemp + '˚'].join(' -- ') : ' -- '
+        dateText: this.formatDateObj(date),
+        tempText: data ? [data.today.maxTemp + '˚', data.today.minTemp + '˚'].join(' - ') : ' -- '
       }
     })
   },
   onTapDayWeather() {
     wx.showToast()
+    wx.navigateTo({
+      url: '/pages/list/list'
+    })
+  },
+  formatDateObj(date){
+    if (date instanceof Date)
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
+    else return false
   }
 })
