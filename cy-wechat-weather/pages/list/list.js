@@ -1,25 +1,32 @@
 const daysList = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
 Page({
   data:{
+    city:'',
     weathers:[]
   },
-  onLoad(){
+  onLoad(option){
+    this.setData({
+      city: option.city
+    })
     this._getWeatherList()
   },
   onPullDownRefresh() {
     this._getWeatherList(() => {
       wx.stopPullDownRefresh()
+      // console.log('refresh')
     })
   },
   _getWeatherList(callback){
+    // console.log('_getWeatherList')
     let _this = this;
     wx.request({
       url: 'https://test-miniprogram.com' + '/api/weather/future',
       data: {
-        city: '北京市',
+        city: _this.data.city,
         time: new Date().getTime()
       },
       success: (req) => {
+        // console.log('_getWeatherList.success')
         if (req.data.code != 200) return false;
         _this._formatWeathers(req.data.result)
       },
@@ -28,6 +35,7 @@ Page({
   },
   _formatWeathers(result){
     let today = new Date()
+    // console.log('_formatWeathers.setData')
     this.setData({
       weathers: result.map((el, index)=>{
         let temp = new Date()
@@ -38,7 +46,7 @@ Page({
         return el
       })
     })
-    console.log(this.data)
+    // console.log(this.data.weathers)
   },
   formatDateObj(date) {
     if (date instanceof Date)

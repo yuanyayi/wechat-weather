@@ -2,7 +2,7 @@
   /* background-color: moccasin;  */
   background-size: 100%;
   background-repeat: no-repeat;
-  padding-top: 174rpx;
+  padding-top: 20rpx;
   padding-bottom: 250rpx;
   position: relative;
 }
@@ -34,10 +34,6 @@
   padding: 20rpx 0;
 }
 .timetips-icon {
-  width: 30rpx;
-  height: 30rpx;
-}
-.timetips-text {
   width: 30rpx;
   height: 30rpx;
 }
@@ -79,4 +75,25 @@
 .day-weather .arrow-icon {
   width:13rpx;
   height:24rpx;
+}
+.location-wrapper {
+  font-size: 30rpx;
+  line-height: 42rpx;
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+.location{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.location-icon {
+  width: 14px;
+  height: 20px;
+  margin-right: 10rpx;
+}
+.location-tips {
+  margin-top:10rpx;
+  color: transparent
 }

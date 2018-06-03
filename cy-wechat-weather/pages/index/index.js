@@ -14,9 +14,11 @@ const weatherColorMap = {
   'heavyrain': '#c5ccd0',
   'snow': '#aae1fc'
 }
-
+var QQMapWX = require('../../libs/qqmap-wx-jssdk.min.js');
+var qqmapsdk;
 Page({
   data: {
+    city: '',
     now: {
       temp: 0,
       weather: '',
@@ -30,10 +32,12 @@ Page({
   },
   // 启动时调用启动页面的onLoad函数：
   onLoad() {
-    this.getNow()
-    this.setToday()
+    this.getLocation()
+    qqmapsdk = new QQMapWX({
+      key: '7JNBZ-LD7CQ-5BO5H-GTLZZ-ZDEP6-IFFU2'
+    });
   },
-  onPullDownRefresh (){
+  onPullDownRefresh() {
     this.getNow(()=>{
       wx.stopPullDownRefresh()
     })
@@ -41,13 +45,13 @@ Page({
   getNow(callback){
     let _this=this
     wx.request({
-      url: 'https://test-miniprogram.com'+'/api/weather/now?city='+'北京市',
+      url: 'https://test-miniprogram.com'+'/api/weather/now?city='+_this.data.city,
       success: (req) => {
         if (req.data.code != 200) return false;
-        console.log(req.data.result)
+        // console.log(req.data.result)
         _this._setNow(req.data.result)
         _this._setForecast(req.data.result)
-        _this.setToday(req.data.result)
+        _this._setToday(req.data.result)
         wx.setNavigationBarColor({
           frontColor: '#000000',
           backgroundColor: weatherColorMap[req.data.result.now.weather],
@@ -81,11 +85,11 @@ Page({
       })
     })
   },
-  setToday(data) {
+  _setToday(data) {
     let date = new Date()
     this.setData({
       today: {
-        dateText: this.formatDateObj(date),
+        dateText: this._formatDateObj(date),
         tempText: data ? [data.today.maxTemp + '˚', data.today.minTemp + '˚'].join(' - ') : ' -- '
       }
     })
@@ -93,12 +97,48 @@ Page({
   onTapDayWeather() {
     wx.showToast()
     wx.navigateTo({
-      url: '/pages/list/list'
+      url: '/pages/list/list?city='+this.data.city
     })
   },
-  formatDateObj(date){
+  _formatDateObj(date){
     if (date instanceof Date)
     return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
     else return false
+  },
+  onTapLocationTips() {
+    this.getLocation()
+    this.getNow()
+  },
+  getLocation(){
+    var _this = this
+    // 获取经纬度
+    wx.getLocation({
+      type: 'gcj02',
+      altitude: true,
+      success: function (res) {
+        // console.log(res)
+        // 获取城市名
+        _this._getLocationCity(res.latitude, res.longitude)
+      },
+    })
+  },
+  _getLocationCity(mylatitude, mylongitude){
+    var _this = this;
+    qqmapsdk.reverseGeocoder({
+      location:{
+        latitude: mylatitude,
+        longitude: mylongitude
+      },
+      success: (res) => {
+        // 更新城市
+        // console.log(res.result.address_component)
+        if (res.result.address_component.city !== _this.data.city){
+          _this.setData({
+            city: res.result.address_component.city
+          })
+          this.getNow()
+        }
+      }
+    })
   }
 })
