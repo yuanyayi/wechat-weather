@@ -81,6 +81,7 @@
   line-height: 42rpx;
   text-align: center;
   margin-bottom: 60rpx;
+  opacity: 0.5;
 }
 .location{
   display: flex;
@@ -95,5 +96,5 @@
 }
 .location-tips {
   margin-top:10rpx;
-  color: transparent
+  /* color: transparent */
 }

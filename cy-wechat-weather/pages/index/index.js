@@ -14,6 +14,13 @@ const weatherColorMap = {
   'heavyrain': '#c5ccd0',
   'snow': '#aae1fc'
 }
+// 获取地址权限状态
+const AUTHSTATUS={
+  UNPROMPTED: {code:0, text:"点击获取当前位置"},
+  UNAUTHORIZED: {code:1, text:"点击开启位置权限"},
+  AUTHORIZED: {code:2, text:""}
+}
+
 var QQMapWX = require('../../libs/qqmap-wx-jssdk.min.js');
 var qqmapsdk;
 Page({
@@ -28,7 +35,9 @@ Page({
     today:{
       dateText: '',
       tempText: '',
-    }
+    },
+    locationAuthType: AUTHSTATUS.UNPROMPTED.code,
+    locationTipsText: AUTHSTATUS.UNPROMPTED.text
   },
   // 启动时调用启动页面的onLoad函数：
   onLoad() {
@@ -37,6 +46,7 @@ Page({
       key: '7JNBZ-LD7CQ-5BO5H-GTLZZ-ZDEP6-IFFU2'
     });
   },
+  // 下拉刷新
   onPullDownRefresh() {
     this.getNow(()=>{
       wx.stopPullDownRefresh()
@@ -106,8 +116,12 @@ Page({
     else return false
   },
   onTapLocationTips() {
-    this.getLocation()
-    this.getNow()
+    if(this.data.locationAuthType === AUTHSTATUS.UNAUTHORIZED.code){
+      wx.openSetting()
+    }else{
+      this.getLocation()
+      this.getNow()
+    }
   },
   getLocation(){
     var _this = this
@@ -115,11 +129,17 @@ Page({
     wx.getLocation({
       type: 'gcj02',
       altitude: true,
-      success: function (res) {
+      success: (res) => {
         // console.log(res)
         // 获取城市名
         _this._getLocationCity(res.latitude, res.longitude)
       },
+      fail: () => {
+        // wx.showToast({
+        //   title: 'fail',
+        // })
+        this._setLocationAuthType('UNAUTHORIZED')
+      }
     })
   },
   _getLocationCity(mylatitude, mylongitude){
@@ -139,6 +159,12 @@ Page({
           this.getNow()
         }
       }
+    })
+  },
+  _setLocationAuthType(str){
+    this.setData({
+      locationAuthType: AUTHSTATUS[str].code,
+      locationTipsText: AUTHSTATUS[str].text
     })
   }
 })
