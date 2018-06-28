@@ -17,7 +17,8 @@
 .temp {
   text-align: center;
   font-size: 200rpx;
-  line-height: 280rpx; /* line-height: 1.4*font-size */
+  line-height: 280rpx; 
+  /* line-height: 1.4*font-size */
   opacity: 0.8;
 }
 .weather {
@@ -88,6 +89,11 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+}
+.location-wrapper {
+  color: rgba(0, 0, 0, 0.5)!important;
+  border: none!important;
+  padding: 0!important;
 }
 .location-icon {
   width: 14px;

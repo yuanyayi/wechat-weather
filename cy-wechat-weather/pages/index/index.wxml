@@ -1,13 +1,13 @@
 <!-- 天气图片 -->
 <view class="weather-wrapper">
   <!-- 地理位置 -->
-  <view class="location-wrapper">
+  <button class="location-wrapper" open-type="{{ locationAuthType==1 ? 'openSetting' : ''}}" bindopensetting="onTapLocation" bindtap="onTapLocation" plain="true">
     <view class="location">
       <image class="location-icon" src="/images/location-icon.png"></image>
       <view class="location-text"> {{city}}</view>
     </view>
-    <view class="location-tips" bindtap="onTapLocationTips">{{locationTipsText}}</view>
-  </view>
+    <view class="location-tips">{{locationTipsText}}</view>
+  </button>
   <view class="temp">{{now.temp}}</view>
   <view class="weather">{{now.weather}}</view>
   <image class="weather-wrapper-bg" src="{{now.weatherBg}}"></image>

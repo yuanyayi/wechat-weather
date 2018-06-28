@@ -1,10 +1,10 @@
 const daysList = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
 Page({
-  data:{
-    city:'',
-    weathers:[]
+  data: {
+    city: '',
+    weathers: []
   },
-  onLoad(option){
+  onLoad(option) {
     this.setData({
       city: option.city
     })
@@ -16,7 +16,7 @@ Page({
       // console.log('refresh')
     })
   },
-  _getWeatherList(callback){
+  _getWeatherList(callback) {
     // console.log('_getWeatherList')
     let _this = this;
     wx.request({
@@ -33,14 +33,14 @@ Page({
       complete: callback
     })
   },
-  _formatWeathers(result){
+  _formatWeathers(result) {
     let today = new Date()
     // console.log('_formatWeathers.setData')
     this.setData({
-      weathers: result.map((el, index)=>{
+      weathers: result.map((el, index) => {
         let temp = new Date()
         el.day = today.getDay() + index >= 7 ? daysList[(today.getDay() + index) % 7] : daysList[today.getDay() + index];
-        el.date = this.formatDateObj(new Date(temp.setDate(today.getDate()+index)));
+        el.date = this.formatDateObj(new Date(temp.setDate(today.getDate() + index)));
         el.tempStr = `${el.minTemp}˚-${el.maxTemp}˚`;
         el.weatherIcon = `/images/${el.weather}-icon.png`;
         return el
