@@ -50,6 +50,9 @@ Page({
   },
   // 下拉刷新
   onPullDownRefresh() {
+    if (!this.data.city || this.data.city == '') {
+      return false
+    }
     this.getNow(() => {
       wx.stopPullDownRefresh()
     })
@@ -57,6 +60,9 @@ Page({
   // 获取现在的天气
   getNow(callback) {
     let _this = this
+    if (!this.data.city || this.data.city == '') {
+      return false
+    }
     wx.request({
       url: 'https://test-miniprogram.com' + '/api/weather/now?city=' + _this.data.city,
       success: (req) => {
@@ -108,7 +114,7 @@ Page({
     })
   },
   onTapDayWeather() {
-    if(!this.data.city || this.data.city.replace(' ','') == ''){
+    if (!this.data.city || this.data.city.replace(' ', '') == '') {
       return false
     }
     wx.navigateTo({
@@ -121,8 +127,19 @@ Page({
     else return false
   },
   onTapLocation() {
-    if (this.data.locationType === UNAUTHORIZED) {
-      wx.openSetting()
+    if (this.data.locationType !== AUTHORIZED) {
+      wx.openSetting({
+        success: res => {
+          if (res.authSetting['scope.userLocation']) {
+            this.setData({
+              locationType: AUTHORIZED,
+              locationTipsText: AUTHORIZED_TIPS
+            })
+            this.getLocation()
+            this.getNow()
+          }
+        }
+      })
     } else {
       this.getLocation()
       this.getNow()
